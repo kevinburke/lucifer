@@ -2,4 +2,4 @@ install:
 	go install ./...
 
 watch:
-	justrun -c 'make install' 'lucifer/*'
+	justrun -c 'make install' 'lucifer'

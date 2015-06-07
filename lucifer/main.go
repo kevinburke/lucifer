@@ -66,10 +66,13 @@ func makeRequest(method string, uri string, body *bytes.Buffer) (*http.Response,
 	return client.Do(req)
 }
 
-func makeRunRequest(fnames []Filename, bail bool) (string, error) {
+func makeRunRequest(fnames []Filename, bail bool, grep string) (string, error) {
 	body := LuciferRunRequest{
 		Bail:  bail,
 		Files: fnames,
+	}
+	if grep != "" {
+		body.Grep = grep
 	}
 	var buf bytes.Buffer
 	enc := json.NewEncoder(&buf)
@@ -142,13 +145,13 @@ func doInvalidate(flags *flag.FlagSet, sync bool, verbose bool) {
 	fmt.Println(body)
 }
 
-func doRun(flags *flag.FlagSet, bail bool, verbose bool) {
+func doRun(flags *flag.FlagSet, bail bool, verbose bool, grep string) {
 	args := flags.Args()
 	var fnames []Filename
 	for i := 0; i < len(args); i++ {
 		fnames = append(fnames, Filename(args[i]))
 	}
-	body, err := makeRunRequest(fnames, bail)
+	body, err := makeRunRequest(fnames, bail, grep)
 	if err != nil {
 		handleError(err, verbose)
 	}
@@ -162,6 +165,9 @@ func main() {
 	runflags := flag.NewFlagSet("run", flag.ExitOnError)
 	bail := runflags.Bool("bail", false, "Bail after a single test failure")
 	runverbose := runflags.Bool("verbose", false, "Verbose response output")
+	grepHelp := "Grep for the given pattern"
+	grep := runflags.String("grep", "", grepHelp)
+	runflags.StringVar(grep, "g", "", grepHelp+" (shorthand)")
 	switch os.Args[1] {
 	case "invalidate":
 		err := invalidateflags.Parse(os.Args[2:])
@@ -174,7 +180,7 @@ func main() {
 		if err != nil {
 			handleError(err, true)
 		}
-		doRun(runflags, *bail, *runverbose)
+		doRun(runflags, *bail, *runverbose, *grep)
 	default:
 		usage()
 	}

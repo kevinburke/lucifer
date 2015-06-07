@@ -140,7 +140,6 @@ func doInvalidate(flags *flag.FlagSet, sync bool, verbose bool) {
 		handleError(err, verbose)
 	}
 	fmt.Println(body)
-	fmt.Println(sync)
 }
 
 func doRun(flags *flag.FlagSet, bail bool, verbose bool) {

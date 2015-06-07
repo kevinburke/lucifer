@@ -144,10 +144,6 @@ func doInvalidate(flags *flag.FlagSet, sync bool, verbose bool) {
 }
 
 func doRun(flags *flag.FlagSet, bail bool, verbose bool) {
-	err := flags.Parse(os.Args[2:])
-	if err != nil {
-		handleError(err, verbose)
-	}
 	args := flags.Args()
 	var fnames []Filename
 	for i := 0; i < len(args); i++ {
@@ -169,8 +165,16 @@ func main() {
 	runverbose := runflags.Bool("verbose", false, "Verbose response output")
 	switch os.Args[1] {
 	case "invalidate":
+		err := invalidateflags.Parse(os.Args[2:])
+		if err != nil {
+			handleError(err, true)
+		}
 		doInvalidate(invalidateflags, *sync, *verbose)
 	case "run":
+		err := runflags.Parse(os.Args[2:])
+		if err != nil {
+			handleError(err, true)
+		}
 		doRun(runflags, *bail, *runverbose)
 	default:
 		usage()

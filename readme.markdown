@@ -3,7 +3,70 @@
 This is a tool that will help you reload your Javascript based test suite
 really fast.
 
-### Usage
+### Server 
+
+#### Usage
+
+Lucifer exposes one function with the following signature:
+
+```javascript
+var lucifer = function(initTestEnvironment, isTestFile, opts)
+```
+
+**initTestEnvironment**: function(cb) A function which sets up your test
+environment. For us this is `sails.lift` and a few other things. Should take a
+`callback` as an argument, and callback with a single error argument if there
+was one.
+
+**isTestFile**: function(file) -> bool. A function which takes a filename as
+input and returns true if the file is a test file. Necessary so we know which
+files to run, and because you don't want to re-require test files until you are
+ready to run them.
+
+**opts**: dictionary. Currently the dictionary supports two keys:
+
+  - **directory**: When you make requests to the Lucifer server, assume they
+    are relative to this directory.
+  - **slow**: A slow test threshold, in milliseconds
+
+So a simple example would be:
+
+```javascript
+var lucifer = require('./lucifer');
+var s = require('sails');
+
+var startTestEnvironment = function(cb) {
+  var start = Date.now();
+  s.lift({}, function(err) {
+    if (err) {
+      return cb(err);
+    }
+    console.log('Sails ready.. booted in ' + (Date.now() - start) + 'ms');
+    return cb();
+  });
+};
+
+var isTestFile = function(file) {
+  return file.indexOf('.test.') >= 0;
+};
+
+var opts = { directory: __dirname, slow: 2 };
+lucifer(startTestEnvironment, isTestFile, opts);
+```
+
+#### Installation
+
+Copy the `lucifer-server.js` file to a place you can import it from.
+
+#### Server Dependencies
+
+The server is an instance of [the Express web server][express] and runs tests
+with [Mocha][mocha].
+
+[express]: http://expressjs.com/
+[mocha]: http://mochajs.org/
+
+### Client Usage
 
 ```
 The Lucifer binary makes requests to the Lucifer server.

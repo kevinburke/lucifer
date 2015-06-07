@@ -66,7 +66,17 @@ with [Mocha][mocha].
 [express]: http://expressjs.com/
 [mocha]: http://mochajs.org/
 
-### Client Usage
+### Client 
+
+#### Installation
+
+```bash
+go get github.com/kevinburke/lucifer    # Or 'make install'
+```
+
+I should really package these up / distribute them as binaries...
+
+#### Usage
 
 ```
 The Lucifer binary makes requests to the Lucifer server.
@@ -98,10 +108,5 @@ Yes! Luckily it's not too difficult to invalidate the Node cache for a module.
 If you call `lucifer invalidate [file]` the binary will make a request to the
 server to invalidate the cache for that module; this way you can ensure the
 server is running tests against the version of the module on your file system.
-
-### Install
-
-Run `make install`. You'll want to have Go installed to install the command
-line client.
 
 [slow]: https://kev.inburke.com/kevin/node-require-is-dog-slow/

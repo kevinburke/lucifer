@@ -168,6 +168,9 @@ func main() {
 	grepHelp := "Grep for the given pattern"
 	grep := runflags.String("grep", "", grepHelp)
 	runflags.StringVar(grep, "g", "", grepHelp+" (shorthand)")
+	if len(os.Args) < 2 {
+		usage()
+	}
 	switch os.Args[1] {
 	case "invalidate":
 		err := invalidateflags.Parse(os.Args[2:])

@@ -142,7 +142,9 @@ func doInvalidate(flags *flag.FlagSet, sync bool, verbose bool) {
 	if err != nil {
 		handleError(err, verbose)
 	}
-	fmt.Println(body)
+	if verbose {
+		fmt.Println(body)
+	}
 }
 
 func doRun(flags *flag.FlagSet, bail bool, verbose bool, grep string) {
@@ -155,7 +157,9 @@ func doRun(flags *flag.FlagSet, bail bool, verbose bool, grep string) {
 	if err != nil {
 		handleError(err, verbose)
 	}
-	fmt.Println(body)
+	if verbose {
+		fmt.Println(body)
+	}
 }
 
 func main() {
